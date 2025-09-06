@@ -32,13 +32,10 @@ An intelligent clinical assistant powered by Azure AI services, featuring a conv
 1. **Clone and setup environment:**
 ```bash
 # Create virtual environment
-python3 -m venv venv
+python3 -m venv avatar-env
 
 # Activate virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows:
-venv\Scripts\activate
+source avatar-env/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -63,17 +60,35 @@ COGNITIVE_SEARCH_API_KEY=your_search_key_here
 COGNITIVE_SEARCH_INDEX_NAME=medical_knowledge_base
 ```
 
-3. **Run the application:**
+3. **Run the setup script:**
+```bash
+# This script will load environment variables and prepare the application
+source ./setup_env.sh
+```
+
+4. **Run the application:**
 ```bash
 python -m flask run -h 0.0.0.0 -p 5000
 ```
 
-4. **Access the application:**
+5. **Access the application:**
 - Clinical chat: `http://localhost:5000/chat`
 - Basic demo: `http://localhost:5000/basic`
 
+### Quick Test
+To verify your setup is working correctly:
+1. Open `http://localhost:5000/basic` in your browser
+2. Click the microphone button and speak a simple phrase
+3. Check that the avatar responds with speech and animation
+
 ### Available Regions
 TTS Avatar is available in: Southeast Asia, North Europe, West Europe, Sweden Central, South Central US, East US 2, and West US 2.
+
+### Key Components
+
+**setup_env.sh**: Environment setup script that loads your Azure credentials and prepares the application environment.
+
+**vad_iterator.py**: Voice Activity Detection module that processes real-time audio streams to detect when users are speaking, enabling more natural conversation flow.
 
 ## Clinical Configuration
 
@@ -138,8 +153,9 @@ docker run -p 5000:5000 --env-file variables.env clinical-chat-bot
 │   └── image/            # Static assets
 ├── requirements.txt      # Python dependencies
 ├── Dockerfile           # Container configuration
-├── vad_iterator.py      # Voice activity detection
-└── variables.env        # Environment variables (create this)
+├── setup_env.sh         # Environment setup script
+├── vad_iterator.py      # Voice activity detection for real-time audio processing
+└── variables.env        # Environment variables (configure with your Azure credentials)
 ```
 
 ## Clinical Considerations
@@ -161,11 +177,31 @@ Always consult with qualified healthcare professionals for medical decisions.
 
 ## Troubleshooting
 
-- Ensure all Azure services are in supported regions
-- Check microphone permissions in browser
-- Verify environment variables are set correctly
-- Monitor latency logs for performance issues
-- Review Azure service quotas and limits
+### Common Issues
+
+**Azure Service Connection Issues:**
+- Verify all environment variables are set correctly in `variables.env`
+- Check that your Azure services are in supported regions
+- Ensure your API keys have the correct permissions
+- Verify your Azure OpenAI deployment is active and accessible
+
+**Audio/Video Issues:**
+- Check microphone permissions in your browser
+- Ensure you're using HTTPS in production (required for microphone access)
+- Try refreshing the page if audio doesn't work initially
+- Check browser console for WebSocket connection errors
+
+**Performance Issues:**
+- Monitor latency logs in the application interface
+- Check Azure service quotas and limits
+- Verify your internet connection stability
+- Consider using a region closer to your users
+
+**Setup Issues:**
+- Ensure Python 3.7+ is installed
+- Verify virtual environment is activated
+- Check that all dependencies are installed correctly
+- Run `source ./setup_env.sh` before starting the application
 
 ## Contributing
 
